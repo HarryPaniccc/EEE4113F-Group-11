@@ -3,14 +3,18 @@
 - Battery/power
 - Camera
 - Load Cell
-## Subsystems
+## Subsystems - not all in lit review
 ---
-### Load Cell (Weight Measurement)
-### Power System/Battery - 
+#### Load Cell (Weight Measurement)
+Literature review by Nicola
+#### Power System/Battery
 - Hardware and connections
 - Veroboard + PCB
-### Camera System - **Adrian**
-### Microcontroller - **Group**
-### Data & Transmission - **Shaihan**
+#### Camera System
+Literature review by Adrian
+#### Microcontroller - **Group**
+#### Data & Transmission
+Literature review by Shaihan
 - How do they already get data?
-### Casing - **Harry**
+#### Casing
+Literature review by Harry
