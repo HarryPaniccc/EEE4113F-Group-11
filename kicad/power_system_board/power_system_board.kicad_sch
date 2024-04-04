@@ -1,0 +1,28 @@
+(kicad_sch (version 20230121) (generator eeschema)
+
+  (uuid 1f2c619c-07aa-42fb-b852-c9242f165a43)
+
+  (paper "A4")
+
+  (title_block
+    (title "EEE4113F_Power_Circuit")
+    (date "2024-04-04")
+    (rev "0")
+    (company "University of Cape Town")
+    (comment 1 "Designer: Harry Papanicolaou")
+  )
+
+  (lib_symbols
+  )
+
+
+  (text "TODO:\n1. Battery Charger IC (MCP73831/2 or TP______ something)\n2. Undervoltage Lockout\n3. Polarity Protection\n4. Regulated power rails (5V, 3V3, ..?)\n5. Battery health circuit"
+    (at 12.7 24.765 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid e475b8c6-b3e4-423e-af5c-b89f1a8d159f)
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
