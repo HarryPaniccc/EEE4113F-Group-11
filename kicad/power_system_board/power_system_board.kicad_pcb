@@ -39,6 +39,45 @@
 		(58 "User.9" user)
 	)
 	(setup
+		(stackup
+			(layer "F.SilkS"
+				(type "Top Silk Screen")
+			)
+			(layer "F.Paste"
+				(type "Top Solder Paste")
+			)
+			(layer "F.Mask"
+				(type "Top Solder Mask")
+				(thickness 0.01)
+			)
+			(layer "F.Cu"
+				(type "copper")
+				(thickness 0.035)
+			)
+			(layer "dielectric 1"
+				(type "core")
+				(thickness 1.51)
+				(material "FR4")
+				(epsilon_r 4.5)
+				(loss_tangent 0.02)
+			)
+			(layer "B.Cu"
+				(type "copper")
+				(thickness 0.035)
+			)
+			(layer "B.Mask"
+				(type "Bottom Solder Mask")
+				(thickness 0.01)
+			)
+			(layer "B.Paste"
+				(type "Bottom Solder Paste")
+			)
+			(layer "B.SilkS"
+				(type "Bottom Silk Screen")
+			)
+			(copper_finish "None")
+			(dielectric_constraints no)
+		)
 		(pad_to_mask_clearance 0)
 		(allow_soldermask_bridges_in_footprints no)
 		(pcbplotparams
@@ -3183,7 +3222,7 @@
 		(descr "SOT-89-3, http://ww1.microchip.com/downloads/en/DeviceDoc/3L_SOT-89_MB_C04-029C.pdf")
 		(tags "SOT-89-3")
 		(property "Reference" "U4"
-			(at 0 -3.5 0)
+			(at 3.5 1.5 0)
 			(layer "F.SilkS")
 			(uuid "38a29b58-b157-4289-95fd-db78d649f630")
 			(effects
@@ -3725,7 +3764,7 @@
 		(descr "Through hole straight pin header, 1x02, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x02 2.54mm single row")
 		(property "Reference" "J3"
-			(at 0 -2.33 180)
+			(at 3 0.775 180)
 			(layer "F.SilkS")
 			(uuid "f5364e47-ca94-47eb-9739-50132d23aa7c")
 			(effects
@@ -8637,8 +8676,8 @@
 		)
 	)
 	(gr_rect
-		(start 69.5 43.5)
-		(end 169.5 143.5)
+		(start 68 42.5)
+		(end 168 142.5)
 		(stroke
 			(width 0.1)
 			(type default)
@@ -8646,6 +8685,54 @@
 		(fill none)
 		(layer "Edge.Cuts")
 		(uuid "0a8f7289-bc49-4192-9a7e-94f562566a78")
+	)
+	(gr_text "EEE4113F\nHarry Papanicolaou\nAdrian McIntosh\nNicola Watt\nMd Shaihan Islam"
+		(at 144 137.5 0)
+		(layer "B.SilkS")
+		(uuid "bf55c7cb-d8b2-4594-adb8-a1b49f23a8a4")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "Starling Weight Project\n"
+		(at 115.5 137.5 0)
+		(layer "B.SilkS")
+		(uuid "f8bbc8f3-d82a-4cc8-9c67-455cd8047b2c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "-"
+		(at 142.5 58.5 0)
+		(layer "F.SilkS")
+		(uuid "43a4b28d-54e4-48db-9d92-eb34ec28be23")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "+"
+		(at 94.5 58 0)
+		(layer "F.SilkS")
+		(uuid "6a1924c9-07ba-4b2e-9b78-8a13646ae5f2")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
 	)
 	(segment
 		(start 81.5 59.9775)
@@ -9416,6 +9503,22 @@
 		(uuid "ce145a90-f003-4fad-bfdd-c2a59885376e")
 	)
 	(segment
+		(start 95.5 83.5)
+		(end 95 83)
+		(width 0.25)
+		(layer "F.Cu")
+		(net 6)
+		(uuid "0354ade2-1061-4a18-8510-58a381049166")
+	)
+	(segment
+		(start 94.4125 89)
+		(end 95.5 89)
+		(width 0.25)
+		(layer "F.Cu")
+		(net 6)
+		(uuid "2753f181-fc80-415e-91c1-90b5ca34d45b")
+	)
+	(segment
 		(start 89.5 87.735)
 		(end 93.1475 87.735)
 		(width 0.25)
@@ -9430,6 +9533,14 @@
 		(layer "F.Cu")
 		(net 6)
 		(uuid "57b1635e-79df-4155-aa29-d74658934c5e")
+	)
+	(segment
+		(start 95.5 84.5)
+		(end 95.5 83.5)
+		(width 0.25)
+		(layer "F.Cu")
+		(net 6)
+		(uuid "5c0f09e4-594b-4a62-bec4-32712bc8bdc6")
 	)
 	(segment
 		(start 95 83)
@@ -9472,6 +9583,14 @@
 		(uuid "9d4702b6-596a-4d77-bb1d-b1106ee5fa82")
 	)
 	(segment
+		(start 93.3625 87.95)
+		(end 94.4125 89)
+		(width 0.25)
+		(layer "F.Cu")
+		(net 6)
+		(uuid "dbca508a-255b-4ef9-9f13-2465be86bd2a")
+	)
+	(segment
 		(start 98 82.775)
 		(end 99.6875 82.775)
 		(width 0.25)
@@ -9487,13 +9606,61 @@
 		(net 6)
 		(uuid "edad3ab1-b56b-4b94-a9ed-bcfb9a80fcb1")
 	)
+	(via
+		(at 95.5 84.5)
+		(size 0.8)
+		(drill 0.4)
+		(layers "F.Cu" "B.Cu")
+		(net 6)
+		(uuid "0bd6bfe1-3283-4d7a-946c-eb3980bfee41")
+	)
+	(via
+		(at 95.5 89)
+		(size 0.8)
+		(drill 0.4)
+		(layers "F.Cu" "B.Cu")
+		(net 6)
+		(uuid "385abe94-48d8-4245-928c-cea02df69732")
+	)
+	(segment
+		(start 95.5 88.5)
+		(end 95.5 84.5)
+		(width 0.25)
+		(layer "B.Cu")
+		(net 6)
+		(uuid "8647cfe0-0e24-4a72-b1c9-36de61000710")
+	)
+	(segment
+		(start 95.5 89)
+		(end 95.5 88.5)
+		(width 0.25)
+		(layer "B.Cu")
+		(net 6)
+		(uuid "a7d3096c-98c7-4dd3-ac4e-81dff8f490bc")
+	)
 	(segment
 		(start 92.6 83.5)
+		(end 91.5 83.5)
+		(width 0.25)
+		(layer "F.Cu")
+		(net 7)
+		(uuid "12f6d195-9564-445e-b356-00dd2c4e9f0d")
+	)
+	(segment
+		(start 93.3625 87)
+		(end 91.5 87)
+		(width 0.25)
+		(layer "F.Cu")
+		(net 7)
+		(uuid "1cfb6498-e301-45ed-bc7f-ccdb9f9af129")
+	)
+	(segment
+		(start 91.5 83.5)
 		(end 90 83.5)
 		(width 0.25)
 		(layer "F.Cu")
 		(net 7)
-		(uuid "0d77ca4c-e0f0-411f-9b05-9eaddab75e91")
+		(uuid "24383a37-fcc0-4c2a-b223-cbbccb4408fb")
 	)
 	(segment
 		(start 93.1 83)
@@ -9502,6 +9669,14 @@
 		(layer "F.Cu")
 		(net 7)
 		(uuid "792c6925-a963-4747-ac32-66bac5fea10c")
+	)
+	(segment
+		(start 91.5 87)
+		(end 91.5 83.5)
+		(width 0.25)
+		(layer "F.Cu")
+		(net 7)
+		(uuid "caf7fa9a-2eb4-4fd5-9bd2-d268d26fd167")
 	)
 	(segment
 		(start 112.5 72)
