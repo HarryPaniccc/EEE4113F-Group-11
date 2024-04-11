@@ -8605,7 +8605,7 @@
 		)
 		(uuid "738f5154-7cb0-4b2f-b564-4746f66af06c")
 	)
-	(text_box "TODO list for ordering parts:\n1. Check out PMosfets/NMosfets for desirable characteristics\n2. 18650 holder\n------------------------------\nDONE\nLDO regulator for 3v3"
+	(text_box "TODO list for ordering parts:\n1. Check out PMosfets/NMosfets for desirable characteristics\n------------------------------\nDONE\nLDO regulator for 3v3\n18650 holder"
 		(exclude_from_sim no)
 		(at 231.14 16.51 0)
 		(size 52.07 106.68)
