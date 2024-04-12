@@ -8550,7 +8550,7 @@
 	)
 	(text_box "Simple reverse-polarity protection\nIf VG = +BATT, MOSFET is open\nIf VG = -Batt, MOSFET is closed\n"
 		(exclude_from_sim no)
-		(at 26.67 13.97 0)
+		(at 27.94 13.97 0)
 		(size 38.1 7.62)
 		(stroke
 			(width 0)
@@ -8662,6 +8662,16 @@
 			)
 		)
 		(uuid "2f47d091-1ea0-4c19-9c16-d876fe33679b")
+	)
+	(text "Battery power swap thing here"
+		(exclude_from_sim no)
+		(at 90.17 99.822 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "7afc6309-58ad-492b-bb58-06f31c2c3037")
 	)
 	(text "Read sheet when assembling"
 		(exclude_from_sim no)
@@ -8854,7 +8864,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "167a37bf-bf22-4acc-bf3b-5c370f6b230f")
 		(property "Reference" "#PWR05"
 			(at 113.03 60.96 0)
@@ -8866,7 +8875,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 113.03 59.69 0)
+			(at 113.03 58.928 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10268,7 +10277,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#sec__SUBCKT_Subcircuits"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/lm358.pdf?ts=1712884954575&ref_url=https%253A%252F%252Fwww.ti.com%252Fproduct%252Fzh-tw%252FLM358"
 			(at 115.57 43.18 0)
 			(effects
 				(font
