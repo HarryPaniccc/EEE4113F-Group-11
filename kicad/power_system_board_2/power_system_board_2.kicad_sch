@@ -8663,6 +8663,16 @@
 		)
 		(uuid "2f47d091-1ea0-4c19-9c16-d876fe33679b")
 	)
+	(text "Using BZX83C2V4 for the zener\n(Communica)"
+		(exclude_from_sim no)
+		(at 125.73 68.072 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "73d060c6-efe0-410b-a2b0-4d201f84c326")
+	)
 	(text "Battery power swap thing here"
 		(exclude_from_sim no)
 		(at 90.17 99.822 0)
@@ -9357,7 +9367,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "3165a2c9-82d3-48c9-a563-d73ffbc6aee4")
 		(property "Reference" "Q1"
 			(at 45.72 43.18 90)
@@ -9367,8 +9376,8 @@
 				)
 			)
 		)
-		(property "Value" "NMOS"
-			(at 45.72 45.72 90)
+		(property "Value" "NMOS - VN0109N3"
+			(at 45.72 48.006 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10511,8 +10520,8 @@
 				)
 			)
 		)
-		(property "Value" "PMOS"
-			(at 124.206 30.988 90)
+		(property "Value" "PMOS - VP0106N3"
+			(at 140.97 31.75 90)
 			(effects
 				(font
 					(size 1.27 1.27)
