@@ -8683,6 +8683,17 @@
 		)
 		(uuid "858f64f9-b9df-474e-a39c-e0c22202d3cf")
 	)
+	(text "Vdropout = 0.15V\nMINIMUM input voltage allowed is 3.45V"
+		(exclude_from_sim no)
+		(at 96.52 112.776 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "89517c6c-cb3f-4bdf-8f18-bc861951e71c")
+	)
 	(text "UVLO operation\n- Gate is more negative than source => PMOS is on\n- Vopamp = A(Vref - Vtest)\n- If Vtest > Vref, the opamp should stay 0, and the PMOS = on"
 		(exclude_from_sim no)
 		(at 70.866 18.542 0)
@@ -10528,7 +10539,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml#cha_MOSFETs"
+		(property "Datasheet" "http://archive.communica.co.za/Content/Catalog/Documents/D3327689658.pdf"
 			(at 116.84 29.21 0)
 			(effects
 				(font
@@ -11479,7 +11490,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "D_Zener"
+		(property "Value" "2V4"
 			(at 102.87 52.0699 90)
 			(effects
 				(font
@@ -11497,7 +11508,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://www.communica.co.za/products/bzx83c2v4"
 			(at 100.33 50.8 0)
 			(effects
 				(font
