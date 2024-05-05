@@ -8950,10 +8950,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "1fa91352-487b-4812-8657-cc5aba394c7b")
 		(property "Reference" "R4"
-			(at 91.44 52.0699 0)
+			(at 78.994 51.308 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8961,8 +8960,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
-			(at 91.44 54.6099 0)
+		(property "Value" "1.2M // 1.5M"
+			(at 73.152 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9031,7 +9030,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "120"
 			(at 102.87 68.5799 0)
 			(effects
 				(font
@@ -9673,10 +9672,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "4a9018f2-57b2-4d87-8450-b69f65b9d931")
 		(property "Reference" "R3"
-			(at 91.44 35.5599 0)
+			(at 83.312 35.052 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9684,8 +9682,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
-			(at 91.44 38.0999 0)
+		(property "Value" "100K"
+			(at 82.042 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9831,7 +9829,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "5M"
 			(at 132.08 54.6099 0)
 			(effects
 				(font
@@ -10395,7 +10393,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "1M"
 			(at 132.08 40.6399 0)
 			(effects
 				(font
@@ -11643,7 +11641,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "90"
 			(at 102.87 34.2899 0)
 			(effects
 				(font
