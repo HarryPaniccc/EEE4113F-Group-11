@@ -1,12 +1,9 @@
 /*********
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp32-cam-take-photo-display-web-server/
-  
-  IMPORTANT!!! 
-   - Select Board "AI Thinker ESP32-CAM"
-   - GPIO 0 must be connected to GND to upload a sketch
-   - After connecting GPIO 0 to GND, press the ESP32-CAM on-board RESET button to put your board in flashing mode
-  
+  Adrian McIntosh
+  The code in this file partially used the following project: {Rui Santos (https://RandomNerdTutorials.com/esp32-cam-take-photo-display-web-server/)}
+  It was specifically used for the format for interacting with the web server, and saving an image file for SPIFFS
+  The rest of the code was written without the use of the Rui Santos project.
+
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
 *********/
@@ -18,7 +15,7 @@
 #include "SD_MMC.h"            // SD Card ESP32
 #include "img_converters.h"
 #include "Arduino.h"
-#include "soc/soc.h"           // Disable brownour problems
+#include "soc/soc.h"           // Disable brownout problems
 #include "soc/rtc_cntl_reg.h"  // Disable brownour problems
 #include "driver/rtc_io.h"
 #include <ESPAsyncWebServer.h>
@@ -32,15 +29,15 @@ const int LOADCELL_DOUT_PIN = 4;
 const int LOADCELL_SCK_PIN = 3;
 HX711 scale;
 
-// // Replace with your network credentials
-// const char* ssid = "CONNECT";
-// const char* password = "spothot123";
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
 boolean takeNewPhoto = false;
+
+//variables for tracking the distance and weight
 int distance_value;
+float weight_value;
 
 // Photo File Name to save in SPIFFS
 #define FILE_PHOTO "/photo.jpg"
@@ -66,10 +63,14 @@ int distance_value;
 #define TRIG_PIN 13
 #define ECHO_PIN 12
 
-# define DIST_TRIGGER 10
+#define DIST_TRIGGER 10
+#define NUM_READINGS 10
+
+#define LOAD_CELL_CONST 1045
 
 int max_value = 0;
 
+//WiFi Server Test Frontend
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
 <head>
@@ -119,11 +120,11 @@ const char index_html[] PROGMEM = R"rawliteral(
         document.getElementById("distanceValue").innerHTML = "Distance Value: " + this.responseText;
       }
     };
-    xhr.open('GET', "/getDistance", true);
+    xhr.open('GET', "/getWeight", true);
     xhr.send();
-  }
 
   setInterval(getDistance, 500);
+
 
 </script>
 </html>)rawliteral";
@@ -132,9 +133,8 @@ void setup() {
   // Serial port for debugging purposes
   Serial.begin(115200);
 
-
-
-  const char* ssid = "WIN NOW!!! LIMITED OFFER!";
+  //set up WiFi
+  const char* ssid = "Starling Scale";
   const char* password = "12345678";
   WiFi.softAP(ssid, password);
 
@@ -142,6 +142,7 @@ void setup() {
   Serial.print("AP IP address: ");
   Serial.println(IP);
 
+  //set up SPIFFS
   if (!SPIFFS.begin(true)) {
     Serial.println("An Error has occurred while mounting SPIFFS");
     ESP.restart();
@@ -182,8 +183,6 @@ void setup() {
   config.pixel_format = PIXFORMAT_JPEG;
 
   if (psramFound()) {
-
-    // uncomment for better image quality
     config.frame_size = FRAMESIZE_UXGA;
     config.jpeg_quality = 10;
     config.fb_count = 2;
@@ -205,7 +204,7 @@ void setup() {
   });
 
   server.on("/capture", HTTP_GET, [](AsyncWebServerRequest * request) {
-    takeNewPhoto = true;
+    capturePhotoSaveSpiffs();
     request->send_P(200, "text/plain", "Taking Photo");
   });
 
@@ -215,10 +214,10 @@ void setup() {
     request->send(SD_MMC, image_file, "image/jpg", false);
   });
 
-  server.on("/getDistance", HTTP_GET, [](AsyncWebServerRequest * request) {
-    char distance_str[32]; // Buffer to hold the string
-    sprintf(distance_str, "%d", distance_value); // Convert the integer to a string
-    request->send_P(200, "text/plain", distance_str);
+  server.on("/getWeight", HTTP_GET, [](AsyncWebServerRequest * request) {
+    char weight_str[32]; // Buffer to hold the string
+    sprintf(weight_str, "%d", weight_value); // Convert the integer to a string
+    request->send_P(200, "text/plain", weight_str);
   });
 
   // Start server
@@ -227,11 +226,18 @@ void setup() {
   // pinMode(2, INPUT_PULLUP);
   initMicroSDCard();
 
-
+  //set up HC-SR04
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
-  scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
 
+  //set up Load Cell
+  scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
+  scale.set_scale();
+  Serial.println("Remove weights.");
+  delay(1000);
+  scale.tare();
+  Serial.println("Tare done.");
+  delay(1000); // Delay to stabilize reading
 }
 
 
@@ -257,22 +263,21 @@ void loop() {
     
   if (distance_value < DIST_TRIGGER) {
 
-  // if (takeNewPhoto || distance_value < DIST_TRIGGER) {
     capturePhotoSaveSpiffs();
     measure_weight();
+    Serial.print(weight_value);
 
-    // takeNewPhoto = false;
-
-  } 
-      // Send a 10 microsecond pulse to start the HC-SR04 sensor
+  } else {
+    scale.tare();
+  }
+    // Send 10 microsecond pulse to start HC-SR04 
     digitalWrite(TRIG_PIN, LOW);
     delayMicroseconds(2);
     digitalWrite(TRIG_PIN, HIGH);
     delayMicroseconds(10);
     digitalWrite(TRIG_PIN, LOW);
 
-    // Read the pulse from the HC-SR04 sensor, which is the time in microseconds
-    // that it takes for the pulse to return to the sensor
+    // Read the pulse returned by the HC-SR04
     long duration = pulseIn(ECHO_PIN, HIGH);
     Serial.print("\nDistance: ");
     Serial.print(distance_value);
@@ -281,28 +286,14 @@ void loop() {
   if (duration != 0) {
     // Calculate the distance in cm
     distance_value = duration * 0.034 / 2;
-
-    // print the distance in the Serial Monitor
-    // Serial.print("\nDistance: ");
-    // Serial.print(distance_value);
   }
   delay(1);
 }
 
-// Check if photo capture was successful
-bool checkPhoto( fs::FS &fs ) {
-  File f_pic = fs.open( FILE_PHOTO );
-  unsigned int pic_sz = f_pic.size();
-  return ( pic_sz > 100 );
-}
-
-// Capture Photo and Save it to SPIFFS
+// Capture Photo and Save it to SPIFFS, as well as the SD Card
 void capturePhotoSaveSpiffs( void ) {
   camera_fb_t * fb = NULL; // pointer
-  // bool ok = 0; // Boolean indicating if the picture has been taken correctly
 
-  // do {
-    // Take a photo with the camera
     Serial.println("\nTaking a photo...");
 
     fb = esp_camera_fb_get();
@@ -329,7 +320,6 @@ void capturePhotoSaveSpiffs( void ) {
       Serial.print(file.size());
       Serial.println(" bytes");
     }
-    // ok = checkPhoto(SPIFFS);
 
     // Close the file
     file.close();
@@ -351,7 +341,6 @@ void capturePhotoSaveSpiffs( void ) {
     Serial.printf("Picture file name: %s\n", path);
 
     // save the photo to microsd
-    
     File sd_file = fs.open(path,FILE_WRITE);
     if(!sd_file){
       Serial.printf("Failed to open file in writing mode");
@@ -368,93 +357,9 @@ void capturePhotoSaveSpiffs( void ) {
     char message[64]; // Buffer to hold the message
     sprintf(message, "\n%s,%d", path, distance_value);
     appendFile(fs, "/data.csv", message);
-
-
-    // check if file has been correctly saved in SPIFFS
-    
-  // } while ( !ok );
 }
 
-// Take photo and save to microSD card
-// void takeSavePhoto(){
-//   // Take Picture with Camera
-//   camera_fb_t * fb = esp_camera_fb_get();
-
-//   if(!fb) {
-//     Serial.println("Camera capture failed");
-//     delay(1000);
-//     ESP.restart();
-//   }
-
-//   // Path where new picture will be saved in SD Card
-//   String path = getPhotoNumber();
-//   Serial.printf("Picture file name: %s\n", path.c_str());
-
-//   // Save picture to microSD card
-//   fs::FS &fs = SD_MMC; 
-//   File file = fs.open(path.c_str(),FILE_WRITE);
-//   if(!file){
-//     Serial.printf("Failed to open file in writing mode");
-//   } 
-//   else {
-//     file.write(fb->buf, fb->len); // payload (image), payload length
-//     Serial.printf("Saved: %s\n", path.c_str());
-//   }
-//   file.close();
-//   esp_camera_fb_return(fb); 
-
-//   // Save the data values associated with the capture to a CSV file
-//   File dataFile = fs.open("/data.csv", FILE_APPEND);
-//   if (!dataFile) {
-//     Serial.println("Failed to open data file in append mode");
-//   }
-//   else {
-//     dataFile.printf("%s, %d\n", path.c_str(), distance_value);
-//     dataFile.close();
-//   }
-// }
-
-// void saveFile()
-// {
-//     // Open the file from SPIFFS
-//   File spiffsFile = SPIFFS.open(spiffsPath, FILE_READ);
-//   if (!spiffsFile) {
-//     Serial.printf("Failed to open file %s for reading", spiffsPath.c_str());
-//     return;
-//   }
-
-//   // Path where new picture will be saved in SD Card
-//   String sdPath = "/sd" + spiffsPath; // Change this to your desired SD card path
-//   Serial.printf("SD card file path: %s\n", sdPath.c_str());
-
-//   // Open a new file on the SD card
-//   fs::FS &fs = SD_MMC; 
-//   File sdFile = fs.open(sdPath.c_str(), FILE_WRITE);
-//   if (!sdFile) {
-//     Serial.printf("Failed to open file %s for writing", sdPath.c_str());
-//     return;
-//   }
-
-//   // Read the contents of the file from SPIFFS and write them to the SD card
-//   byte buf[512];
-//   while (spiffsFile.available()) {
-//     size_t len = spiffsFile.read(buf, sizeof(buf));
-//     sdFile.write(buf, len);
-//   }
-
-//   Serial.printf("Copied file %s to %s\n", spiffsPath.c_str(), sdPath.c_str());
-
-//   // Close the files
-//   spiffsFile.close();
-//   sdFile.close();
-  
-//   File file = SPIFFS.open("/data.csv", FILE_APPEND);
-//   if (!file) {
-//     Serial.println("There was an error opening the file for writing");
-//     return;
-//   }
-// }
-
+// function for writing to a file
 void appendFile(fs::FS &fs, const char * path, const char * message){
   Serial.printf("Appending to file: %s\n", path);
 
@@ -471,12 +376,12 @@ void appendFile(fs::FS &fs, const char * path, const char * message){
   file.close();
 }
 
+// function for checking the contents of the SD card and getting the name of the next image to be saved
 int getNextPhotoNumber(fs::FS &fs){
-
 
   const char * dirname = "/";
 
-  Serial.printf("Listing directory: %s\n", dirname);
+  Serial.printf("Checking directory: %s\n", dirname);
 
   File root = fs.open(dirname);
   if(!root){
@@ -491,12 +396,7 @@ int getNextPhotoNumber(fs::FS &fs){
   File file = root.openNextFile();
   while(file){
     if(file.isDirectory()){
-      // comment out later
-      // Serial.print("  DIR : ");
-      // Serial.println(file.name());
-      // if(levels){
-      //   listDir(fs, file.name(), levels -1);
-      // }
+
     } else {
       String filename = file.name();
       filename.replace("photo", ""); // Remove "photo" prefix
@@ -505,11 +405,6 @@ int getNextPhotoNumber(fs::FS &fs){
       if (value > max_value) {
         max_value = value;
       }
-      // comment out later
-      Serial.print("  FILE: ");
-      Serial.print(file.name());
-      Serial.print("  SIZE: ");
-      Serial.println(file.size());
     }
      file = root.openNextFile();
   }
@@ -518,24 +413,54 @@ int getNextPhotoNumber(fs::FS &fs){
   return max_value;
 }
 
+// measure the weight of the bird
 void measure_weight()
 {
-    // if (scale.is_ready()) {
-    // scale.set_scale();    
-    // Serial.println("Tare... remove any weights from the scale.");
-    // delay(10000);
-    // scale.tare();
-    // Serial.println("Tare done...");
-    // Serial.print("Place a known weight on the scale...");
-    // delay(10000);
-    // long reading = scale.get_units(10);
-    // Serial.print("Result: ");
-    // Serial.println(reading);
-    // } 
-    // else {
-    //   Serial.println("HX711 not found.");
-    // }
-    // delay(10000);
-  
 
+    float total_weight = 0;
+    int count = 0;
+    for (int j = 0; j < NUM_READINGS; j++) {
+        
+        // check that the bird is still there (described in loop())
+        digitalWrite(TRIG_PIN, LOW);
+        delayMicroseconds(2);
+        digitalWrite(TRIG_PIN, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(TRIG_PIN, LOW);
+
+        long duration = pulseIn(ECHO_PIN, HIGH);
+        Serial.print("\nDistance: ");
+        Serial.print(distance_value);
+
+        if (duration != 0) {
+          distance_value = duration * 0.034 / 2;
+        }
+
+        if (distance_value > DIST_TRIGGER)
+        {
+            return;
+        }
+
+      //check that the scale is ready
+      if (scale.is_ready()) {
+        count = count+1;
+        // delay(40);
+
+        // get the latest average reading
+        float reading = scale.get_units(10); // get the output of the scale
+        float weight = reading/LOAD_CELL_CONST; // convert the reading to grams
+        Serial.print("\nWeight ");
+        Serial.print(j + 1);
+        Serial.print(": ");
+        Serial.println(weight, 1);
+        total_weight += weight;
+        weight_value = total_weight/(count); // get the average value
+      } else {
+        Serial.println("HX711 not found.");
+      }
+      delay(80); // Delay between readings
+    }
+    Serial.print("Final Weight: ");
+    Serial.print(weight_value); // print the final weight
+    
 }
